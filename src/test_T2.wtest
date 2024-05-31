@@ -1,0 +1,55 @@
+import drCasa.*
+	
+describe "Dr. Casa Temporada 2"{
+
+const malaria = new Infecciosa(celulasAmenazadas=500)
+const otitis = new Infecciosa(celulasAmenazadas=100)
+const lupus = new Autoinmune(celulasAmenazadas=10000)
+const malariaPulenta = new Infecciosa(celulasAmenazadas=800)
+const muerte = new Muerte(celulasAmenazadas=0)
+	
+const logan = new Persona(celulas=3000000)
+const frank = new Persona(celulas=3500000)
+
+const cameron = new Medico(dosis=100, celulas=3200000)
+const house = new JefeDepto(dosis=0,celulas=3300000)
+
+	test "la malaria se atenua en 100 celulas y el lupus en 500" {
+		malaria.atenuar(100)
+		lupus.atenuar(500)
+			assert.equals(400, malaria.celulasAmenazadas())
+			assert.equals(9500, lupus.celulasAmenazadas())	
+	}
+	
+	test "cameron atiende a logan curando malaria y otitis, disminuye a 8500 las celulas afectadas por el lupus"{
+		logan.contraer(malaria)
+		logan.contraer(otitis)
+		logan.contraer(lupus)
+		cameron.atender(logan)
+			assert.equals(8500, logan.cantidadDeCelulasAmenazadas())
+			assert.equals([lupus], logan.enfermedades())
+	}
+	
+	test "cameron cura a frank"{
+		frank.contraer(malariaPulenta)
+		cameron.atender(frank)
+			assert.that(frank.estaCurado())
+	}
+	
+	test "cameron y house contraen malaria"{
+		cameron.contraer(malaria)
+		house.contraer(malaria)
+			assert.equals([malaria], cameron.enfermedades())
+			assert.equals([malaria], house.enfermedades())
+	}
+	
+	test "house contrae la muerte"{
+		house.contraer(muerte)
+		house.diaSiguiente()
+			assert.equals(0, house.temperatura())
+	}
+	
+	
+	
+	
+}
